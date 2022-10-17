@@ -66,8 +66,10 @@ publishing {
             )
 
             credentials {
-                username = project.findProperty("sonatypeUsername") as String?
-                password = project.findProperty("sonatypePassword") as String?
+                val mavenUsername = System.getenv("MAVEN_USERNAME")
+                val mavenPassword = System.getenv("MAVEN_PASSWORD")
+                username = mavenUsername
+                password = mavenPassword
             }
         }
     }
@@ -111,12 +113,5 @@ publishing {
 }
 
 signing {
-    val paraphrase = project.findProperty("gpgKeyPassword") as String?
-    println("PARAPHRASE: $paraphrase")
-    useInMemoryPgpKeys(
-        project.findProperty("gpgKeyId") as String?,
-        project.findProperty("gpgKeySecret") as String?,
-        paraphrase,
-    )
     sign(publishing.publications)
 }

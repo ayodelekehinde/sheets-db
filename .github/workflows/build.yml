@@ -45,11 +45,18 @@ jobs:
         - name: Setup gradle
           uses: gradle/gradle-build-action@v2
 
+        - name: Decode GPG Key
+          run: |
+            echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" > ~/.gradle/secring.gpg.b64                  
+            base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
+          shell: bash
+
         - name: Publish to sonatype
           run: |
             ./gradlew publishAllPublicationsToMavenRepository \
-            -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }} \
-            -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }} \
-            -PgpgKeySecret=$${{ secrets.GPG_KEY_SECRET }} \
-            -PgpgKeyPassword=${{ secrets.GPG_KEY_PASSWORD }} \
-            -PgpgKeyId=${{ secrets.GPG_KEY_ID }}
+            -Psigning.keyId=${{ secrets.SIGNING_KEY_ID }} \
+            -Psigning.password=${{ secrets.SIGNING_PASSWORD }} 
+            -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg)
+          env:
+            MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+            MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}

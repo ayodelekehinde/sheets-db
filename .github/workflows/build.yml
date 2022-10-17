@@ -47,13 +47,13 @@ jobs:
 
         - name: Publish to sonatype
           run: |
-            ./gradlew publishJvmPublicationToMavenRepository \
+            ./gradlew publishAllPublicationsToMavenRepository \
             -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }} \
             -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }} \
             -PgpgKeySecret=$${{ secrets.GPG_KEY_SECRET }} \
             -PgpgKeyPassword=${{ secrets.GPG_KEY_PASSWORD }}
           env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
-          GPG_KEY_SECRET: ${{ secrets.GPG_KEY_SECRET }}
+            SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+            SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+            GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
+            GPG_KEY_SECRET: ${{ secrets.GPG_KEY_SECRET }}

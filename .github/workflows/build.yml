@@ -47,7 +47,7 @@ jobs:
 
         - name: Publish to sonatype
           run: |
-            ./gradlew publishAllPublicationsToMavenRepository \
+            ./gradlew publishJvmPublicationToMavenRepository \
             -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }} \
             -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }} \
             -PgpgKeySecret=$${{ secrets.GPG_KEY_SECRET }} \

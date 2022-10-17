@@ -112,6 +112,7 @@ publishing {
 
 signing {
     useInMemoryPgpKeys(
+        project.findProperty("gpgKeyId") as String?,
         project.findProperty("gpgKeySecret") as String?,
         project.findProperty("gpgKeyPassword") as String?,
     )

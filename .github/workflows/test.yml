@@ -1,0 +1,58 @@
+name: Production actions
+
+on:
+  push:
+    branches: ["development"]
+
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    strategy:
+      matrix:
+        config: [
+          { target: jvm, os: ubuntu-latest, tasks: jvmTest, continueOnError: false }
+       ]
+    runs-on: ${{ matrix.config.os }}
+    name: Build ${{ matrix.config.target }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Setup gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Test ${{ matrix.config.target }} targets
+        continue-on-error: ${{ matrix.config.continueOnError }}
+        run: ./gradlew ${{ matrix.config.tasks }}
+
+  release:
+      runs-on: macos-latest
+      needs:
+        - build
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: set up JDK 11
+          uses: actions/setup-java@v3
+          with:
+            java-version: '11'
+            distribution: 'temurin'
+
+        - name: Setup gradle
+          uses: gradle/gradle-build-action@v2
+
+        - name: Decode GPG Key
+          run: |
+            echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" > ~/.gradle/secring.gpg.b64                  
+            base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
+          shell: bash
+
+        - name: Publish to sonatype
+          run: ./gradlew publishAllPublicationsToMavenRepository -Psigning.keyId=${{ secrets.SIGNING_KEY_ID }} -Psigning.password=${{ secrets.SIGNING_PASSWORD }} -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg)
+          env:
+            MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+            MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}

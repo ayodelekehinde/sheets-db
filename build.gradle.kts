@@ -111,10 +111,12 @@ publishing {
 }
 
 signing {
+    val paraphrase = project.findProperty("gpgKeyPassword") as String?
+    println("PARAPHRASE: $paraphrase")
     useInMemoryPgpKeys(
         project.findProperty("gpgKeyId") as String?,
         project.findProperty("gpgKeySecret") as String?,
-        project.findProperty("gpgKeyPassword") as String?,
+        paraphrase,
     )
     sign(publishing.publications)
 }

@@ -1,4 +1,4 @@
-name: Development actions
+name: Production actions
 
 on:
   push:

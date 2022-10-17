@@ -82,6 +82,7 @@ publishing {
     publications {
         withType<MavenPublication> {
             artifact(javadocJar)
+            this.
 
             pom {
                 name.set("SheetsDB")

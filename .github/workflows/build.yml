@@ -52,3 +52,8 @@ jobs:
             -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }} \
             -PgpgKeySecret=$${{ secrets.GPG_KEY_SECRET }} \
             -PgpgKeyPassword=${{ secrets.GPG_KEY_PASSWORD }}
+          env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
+          GPG_KEY_SECRET: ${{ secrets.GPG_KEY_SECRET }}

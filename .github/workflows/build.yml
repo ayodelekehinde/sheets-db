@@ -11,7 +11,7 @@ jobs:
       matrix:
         config: [
           { target: jvm, os: ubuntu-latest, tasks: jvmTest, continueOnError: false }
-        ]
+       ]
     runs-on: ${{ matrix.config.os }}
     name: Build ${{ matrix.config.target }}
     steps:
@@ -29,7 +29,7 @@ jobs:
         continue-on-error: ${{ matrix.config.continueOnError }}
         run: ./gradlew ${{ matrix.config.tasks }}
 
-    release:
+  release:
       runs-on: macos-latest
       needs:
         - build

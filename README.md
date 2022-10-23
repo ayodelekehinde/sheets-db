@@ -1,7 +1,7 @@
 # <img src="https://kotlinlang.org/assets/images/favicon.svg" height="23"/> Sheets-DB
-[![Build](https://github.com/xxfast/KStore/actions/workflows/build.yml/badge.svg)](https://github.com/Cherrio-LLC/sheets-db/actions/workflows/test.yml)
+[![Production actions](https://github.com/Cherrio-LLC/sheets-db/actions/workflows/release.yml/badge.svg)](https://github.com/Cherrio-LLC/sheets-db/actions/workflows/release.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.7.10-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.xxfast/kstore?color=blue)](https://search.maven.org/search?q=g:io.github.cherrio-llc)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.cherrio-llc/sheets-db?color=blue)](https://search.maven.org/search?q=g:io.github.cherrio-llc)
 
 
 ![badge-jvm](http://img.shields.io/badge/platform-jvm-DB413D.svg?style=flat)
@@ -24,7 +24,7 @@ repositories {
 }
 ```
 
-Include the dependency in `commonMain`. Latest version [![Maven Central](https://img.shields.io/maven-central/v/io.github.xxfast/kstore?color=blue)](https://search.maven.org/search?q=g:io.github.cherrio-ll)
+Include the dependency. Latest version [![Maven Central](https://img.shields.io/maven-central/v/io.github.cherrio-llc/sheets-db?color=blue)](https://search.maven.org/search?q=g:io.github.cherrio-llc)
 ```kotlin
 implementation("io.github.cherrio-llc:sheets-db:<version>")
 ```

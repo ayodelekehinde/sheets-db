@@ -54,7 +54,7 @@ data class User(
 > the class `User` is a name of a sheet. Check the image below.
 > Also your first column of a row should be an `id` for better queries.
 
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/Cherrio-LLC/sheets-db/blob/master/art/spreadsheet.png?raw=true)
 
 ### Create a table
 ```kotlin

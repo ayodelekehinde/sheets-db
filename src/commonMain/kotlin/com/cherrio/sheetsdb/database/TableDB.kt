@@ -34,7 +34,6 @@ suspend inline fun <reified T> SheetTable<T>.createTable(withSerializer: Boolean
         createSheet
     }
 }
-
 @PublishedApi
 internal suspend fun creatSheet(sheetId: String, token: String, request: CreateSheet): Boolean{
   val response =  client.post(sheetId.getSpreadSheetUrl.plus(":batchUpdate")){

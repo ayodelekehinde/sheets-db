@@ -20,16 +20,16 @@ import kotlinx.serialization.json.jsonPrimitive
  * @receiver [SheetTable]
  * @return [List]
  */
-suspend inline fun <reified T> SheetTable<T>.get(): List<T> {
+suspend inline fun <reified T> SheetTable<T>.get(sheetName: String? = null): List<T> {
     val response = tableOp {
-        client.get(combineUrl(sheetId, SHEET_VALUES, sheet)) {
+        client.get(combineUrl(sheetId, SHEET_VALUES, sheetName ?: sheet)) {
             bearerAuth(token)
         }
     }
     val data = response.body<Table>()
-    return data.values.mapResults()
-
+    return data.values.filter { it.isNotEmpty() }.mapResults()
 }
+
 
 /**
  * Searches the table for a match of the filter
@@ -38,14 +38,14 @@ suspend inline fun <reified T> SheetTable<T>.get(): List<T> {
  * @param filter:[Filter]
  * @return [List]
  */
-suspend inline fun <reified T> SheetTable<T>.find(filter: Filter): List<T> {
+suspend inline fun <reified T> SheetTable<T>.find(filter: Filter, sheetName: String? = null): List<T> {
     val response = tableOp {
-        client.get(combineUrl(sheetId, SHEET_VALUES, sheet)) {
+        client.get(combineUrl(sheetId, SHEET_VALUES, sheetName?: sheet)) {
             bearerAuth(token)
         }
     }
-    val data = response.body<Table>()
-    return data.values.find(filter.key, filter.query)
+    val data = response.body<Table>().values.filter { it.isNotEmpty() }
+    return data.find(filter.key, filter.query)
 }
 
 /**
@@ -85,9 +85,9 @@ internal fun <T> List<T>.removeColumnNames() =
 
 
 @PublishedApi
-internal suspend fun <T> SheetTable<T>.getColumnNames(): List<String> {
+internal suspend fun <T> SheetTable<T>.getColumnNames(sheetName: String? = null): List<String> {
     val response = tableOp {
-        client.get(combineUrl(sheetId, SHEET_VALUES, sheet)) {
+        client.get(combineUrl(sheetId, SHEET_VALUES, sheetName?:sheet)) {
             bearerAuth(token)
         }
     }

@@ -9,25 +9,28 @@ import kotlinx.serialization.json.Json
 val json = Json {
     ignoreUnknownKeys = true
 }
-fun client(engine: HttpClientEngine): HttpClient{
+internal fun client(engine: HttpClientEngine): HttpClient{
     return HttpClient(engine){
         install(ContentNegotiation){
             json(json)
         }
     }
 }
-val client = HttpClient{
+@PublishedApi
+internal val client = HttpClient{
     install(ContentNegotiation){
         json(json)
     }
 }
 
-const val BASE_URL = "https://sheets.googleapis.com/v4/spreadsheets"
+@PublishedApi
+internal const val BASE_URL = "https://sheets.googleapis.com/v4/spreadsheets"
 
-val String.getSpreadSheetUrl: String get(){
+@PublishedApi
+internal val String.getSpreadSheetUrl: String get(){
     return "$BASE_URL/$this"
 }
-
-fun combineUrl(vararg params: String): String{
+@PublishedApi
+internal fun combineUrl(vararg params: String): String{
     return BASE_URL + "/" + params.joinToString("/")
 }

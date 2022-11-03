@@ -15,13 +15,17 @@ import io.ktor.http.*
  * Abstraction
  */
 interface SheetTable<T>{
-    val token: String
+    var token: String
     val sheetId: String
     val sheet: String
+
+    fun setBearerToken(token: String){
+        this.token = token
+    }
 }
 @PublishedApi
 internal class SheetTableImpl<T>(
-    override val token: String,
+    override var token: String,
     override val sheet: String,
     override val sheetId: String): SheetTable<T>
 

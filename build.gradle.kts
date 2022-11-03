@@ -1,14 +1,14 @@
 val ktor_version: String by project
 plugins {
-    kotlin("multiplatform") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("multiplatform") version "1.7.20"
+    kotlin("plugin.serialization") version "1.7.20"
     id("io.kotest.multiplatform") version "5.0.2"
     id("maven-publish")
     id("signing")
 }
 
 group = "io.github.cherrio-llc"
-version = "0.0.1"
+version = if (project.hasProperty("staging")) "0.0.1-SNAPSHOT" else "0.0.2"
 
 repositories {
     jcenter()
@@ -114,5 +114,8 @@ publishing {
 }
 
 signing {
-    sign(publishing.publications)
+    val property = project.hasProperty("dev")
+    if (!property) {
+        sign(publishing.publications)
+    }
 }

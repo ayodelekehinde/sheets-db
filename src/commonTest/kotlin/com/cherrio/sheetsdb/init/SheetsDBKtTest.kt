@@ -4,6 +4,7 @@
 
 package com.cherrio.sheetsdb.init
 
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -16,13 +17,12 @@ class SheetsDBKtTest : FunSpec(){
             }
             exception.message shouldBe "Sheet-ID is required"
         }
-        test("SheetDb should throw error if bearerToken is not added"){
-            val exception = shouldThrow<InitializationException> {
+        test("SheetDb should not throw error if bearerToken is not added"){
+            val exception = shouldNotThrow<InitializationException> {
                 SheetsDb {
                     sheetId = "Hello sheet"
                 }
             }
-            exception.message shouldBe "You need either a Bearer Token or a Refresh token"
         }
     }
 }

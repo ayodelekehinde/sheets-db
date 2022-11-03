@@ -38,7 +38,6 @@ suspend inline fun <reified T> SheetTable<T>.get(): List<T> {
  * @param filter:[Filter]
  * @return [List]
  */
-
 suspend inline fun <reified T> SheetTable<T>.find(filter: Filter): List<T> {
     val response = tableOp {
         client.get(combineUrl(sheetId, SHEET_VALUES, sheet)) {
@@ -56,7 +55,6 @@ suspend inline fun <reified T> SheetTable<T>.find(filter: Filter): List<T> {
  * @param key:[String]
  * @param value:[String]
  */
-
 @PublishedApi
 internal inline fun <reified T> List<List<String>>.find(key: String, value: String): List<T>{
     val keys = first()

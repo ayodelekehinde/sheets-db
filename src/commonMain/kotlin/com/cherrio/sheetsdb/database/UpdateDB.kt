@@ -21,7 +21,7 @@ import kotlinx.serialization.json.jsonObject
  * @return [Boolean]
  */
 
-suspend inline fun <reified T> SheetTable<T>.update(value: T): Boolean{
+suspend inline fun <reified T> SheetTable<T>.update(value: T, sheetName: String? = null): Boolean{
     val jsonElement = json.encodeToJsonElement(value)
     val id = jsonElement.jsonObject["id"]?.parseId()
     val keys = jsonElement.jsonObject.keys
@@ -33,8 +33,8 @@ suspend inline fun <reified T> SheetTable<T>.update(value: T): Boolean{
             throw SheetTableException("No ID found for update op. Make sure your table in google sheet has required table")
         }
         else -> {
-            val notation = getNotation(id + 1, keys.size, sheet)
-            val columnName = getColumnNames()
+            val notation = getNotation(id + 1, keys.size, sheetName ?: sheet)
+            val columnName = getColumnNames(sheetName)
             val body = columnName.toStrings(value)
             val appendSheet = AppendSheet(values = listOf(body))
             val response = tableOp {

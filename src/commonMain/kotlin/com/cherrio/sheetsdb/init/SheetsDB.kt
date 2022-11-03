@@ -7,7 +7,10 @@ import com.cherrio.sheetsdb.database.SheetTableImpl
 import com.cherrio.sheetsdb.models.SpreadSheet
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-
+/**
+ * [SheetsDbBuilder.sheetId] is compulsory
+ * while other init values are optional
+ */
 fun SheetsDb(block: SheetsDbBuilder.() -> Unit): SheetDb{
     val sheetsDbBuilder = SheetsDbBuilder().apply(block)
     sheetsDbBuilder.validate()
@@ -44,12 +47,6 @@ data class SheetsDbBuilder(
         when{
             sheetId.isEmpty() -> {
                 throw InitializationException("Sheet-ID is required")
-            }
-            bearerToken.isEmpty() && refreshToken  == null ->{
-                throw InitializationException("You need either a Bearer Token or a Refresh token")
-            }
-            bearerToken.isNotEmpty() && refreshToken != null ->{
-                throw InitializationException("Pass either Bearer token or Refresh token, not both")
             }
         }
     }

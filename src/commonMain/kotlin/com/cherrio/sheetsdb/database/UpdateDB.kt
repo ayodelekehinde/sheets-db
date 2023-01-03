@@ -9,6 +9,7 @@ import com.cherrio.sheetsdb.client.client
 import com.cherrio.sheetsdb.client.json
 import com.cherrio.sheetsdb.init.SheetTableException
 import com.cherrio.sheetsdb.models.AppendSheet
+import com.cherrio.sheetsdb.utils.getToken
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.json.encodeToJsonElement
@@ -44,7 +45,7 @@ suspend inline fun <reified T> SheetTable<T>.update(value: T, sheetName: String?
                         parameters.append("valueInputOption", "RAW")
                         parameters.append("includeValuesInResponse", "false")
                     }
-                    bearerAuth(token)
+                    bearerAuth(getToken)
                     setBody(appendSheet)
                 }
             }

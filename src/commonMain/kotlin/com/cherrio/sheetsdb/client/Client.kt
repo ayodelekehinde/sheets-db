@@ -2,6 +2,7 @@ package com.cherrio.sheetsdb.client
 
 import io.ktor.client.*
 import io.ktor.client.engine.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
@@ -20,6 +21,10 @@ internal fun client(engine: HttpClientEngine): HttpClient{
 internal val client = HttpClient{
     install(ContentNegotiation){
         json(json)
+    }
+    install(HttpTimeout){
+        requestTimeoutMillis = 3000000
+        connectTimeoutMillis = 3000000
     }
 }
 

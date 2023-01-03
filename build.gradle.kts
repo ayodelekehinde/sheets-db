@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.cherrio-llc"
-version = if (project.hasProperty("staging")) "0.0.1-SNAPSHOT" else "0.0.2"
+version = if (project.hasProperty("staging")) "0.0.1-SNAPSHOT" else "0.0.3"
 
 repositories {
     jcenter()

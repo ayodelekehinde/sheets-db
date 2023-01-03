@@ -10,6 +10,7 @@ import com.cherrio.sheetsdb.client.client
 import com.cherrio.sheetsdb.client.getSpreadSheetUrl
 import com.cherrio.sheetsdb.init.SheetTableException
 import com.cherrio.sheetsdb.models.*
+import com.cherrio.sheetsdb.utils.getToken
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -27,9 +28,9 @@ import kotlinx.serialization.json.jsonObject
 suspend inline fun <reified T> SheetTable<T>.createTable(withSerializer: Boolean = false): Boolean{
     val sheetTab = if (withSerializer) getSheetAndColumnNamesSerializer<T>() else getSheetAndColumnNames<T>()
     val request = creatSheetRequest(sheetTab.tableName)
-    val createSheet = creatSheet(sheetId, token, request)
+    val createSheet = creatSheet(sheetId, getToken, request)
     return if (createSheet){
-        createColumns(sheetId, sheetTab, token)
+        createColumns(sheetId, sheetTab, getToken)
     }else{
         createSheet
     }

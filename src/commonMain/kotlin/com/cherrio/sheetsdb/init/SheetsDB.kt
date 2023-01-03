@@ -5,6 +5,8 @@ import com.cherrio.sheetsdb.client.getSpreadSheetUrl
 import com.cherrio.sheetsdb.database.SheetTable
 import com.cherrio.sheetsdb.database.SheetTableImpl
 import com.cherrio.sheetsdb.models.SpreadSheet
+import com.cherrio.sheetsdb.utils.cache
+import com.cherrio.sheetsdb.utils.getToken
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 /**
@@ -14,14 +16,14 @@ import io.ktor.client.request.*
 fun SheetsDb(block: SheetsDbBuilder.() -> Unit): SheetDb{
     val sheetsDbBuilder = SheetsDbBuilder().apply(block)
     sheetsDbBuilder.validate()
-    return SheetsDBImpl(sheetsDbBuilder.bearerToken, sheetsDbBuilder.sheetId)
+    return SheetsDBImpl(sheetsDbBuilder.sheetId)
 }
 
-private class SheetsDBImpl(override var token: String, override val sheetId: String): SheetDb{
+private class SheetsDBImpl(override val sheetId: String): SheetDb{
 
     override suspend fun getSheetDetails(): SpreadSheet{
         val response = client.get(sheetId.getSpreadSheetUrl){
-            bearerAuth(token)
+            bearerAuth(getToken)
         }
         return response.body()
     }
@@ -29,19 +31,19 @@ private class SheetsDBImpl(override var token: String, override val sheetId: Str
 }
 
 interface SheetDb{
-    var token: String
     val sheetId: String
     suspend fun getSheetDetails(): SpreadSheet
+    fun setBearerToken(token: String){
+        cache("bearerToken", token)
+    }
 }
 
 inline fun <reified T> SheetDb.getTable(): SheetTable<T> {
-    return  SheetTableImpl(token, T::class.simpleName!!, sheetId)
+    return  SheetTableImpl(T::class.simpleName!!, sheetId)
 }
 
 data class SheetsDbBuilder(
-    var sheetId: String = "",
-    var bearerToken: String = "",
-    var refreshToken: RefreshToken? = null
+    var sheetId: String = ""
 ){
     fun validate(){
         when{

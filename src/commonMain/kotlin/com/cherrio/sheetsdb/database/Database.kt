@@ -43,9 +43,6 @@ internal suspend fun <T> SheetTable<T>.tableOp(block: suspend () -> HttpResponse
        HttpStatusCode.Forbidden ->{
            throw AuthorizationException("Bearer token has expired")
        }
-       HttpStatusCode.Unauthorized ->{
-           throw AuthorizationException("Bearer token has expired")
-       }
        else -> {
            throw Exception(response.bodyAsText())
        }

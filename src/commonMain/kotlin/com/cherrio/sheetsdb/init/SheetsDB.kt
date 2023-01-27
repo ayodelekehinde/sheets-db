@@ -9,8 +9,6 @@ import com.cherrio.sheetsdb.utils.cache
 import com.cherrio.sheetsdb.utils.getToken
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import io.ktor.http.*
-
 /**
  * [SheetsDbBuilder.sheetId] is compulsory
  * while other init values are optional
@@ -26,10 +24,6 @@ private class SheetsDBImpl(override val sheetId: String): SheetDb{
     override suspend fun getSheetDetails(): SpreadSheet{
         val response = client.get(sheetId.getSpreadSheetUrl){
             bearerAuth(getToken)
-        }
-        println("Status: ${response.status}")
-        if (response.status == HttpStatusCode.Unauthorized || response.status == HttpStatusCode.Forbidden){
-            throw AuthorizationException("Bearer token has expired")
         }
         return response.body()
     }

@@ -8,6 +8,7 @@ import com.cherrio.sheetsdb.client.*
 import com.cherrio.sheetsdb.client.BASE_URL
 import com.cherrio.sheetsdb.client.client
 import com.cherrio.sheetsdb.client.getSpreadSheetUrl
+import com.cherrio.sheetsdb.init.AuthorizationException
 import com.cherrio.sheetsdb.init.SheetTableException
 import com.cherrio.sheetsdb.models.*
 import com.cherrio.sheetsdb.utils.getToken
@@ -22,11 +23,12 @@ import kotlinx.serialization.json.jsonObject
  * Create a Table aka Sheet on the spreadsheet. Note that there's a performance overhead setting the
  * [withSerializer] to true
  * @param withSerializer [Boolean] defaults to false
+ * @param tableName [String] name of the tale to be created
  * @receiver [SheetTable]
  * @return [Boolean]
  */
-suspend inline fun <reified T> SheetTable<T>.createTable(withSerializer: Boolean = false): Boolean{
-    val sheetTab = if (withSerializer) getSheetAndColumnNamesSerializer<T>() else getSheetAndColumnNames<T>()
+suspend inline fun <reified T> SheetTable<T>.createTable(tableName: String? = null, withSerializer: Boolean = false): Boolean{
+    val sheetTab = if (withSerializer) getSheetAndColumnNamesSerializer<T>(tableName) else getSheetAndColumnNames<T>(tableName)
     val request = creatSheetRequest(sheetTab.tableName)
     val createSheet = creatSheet(sheetId, getToken, request)
     return if (createSheet){
@@ -42,8 +44,13 @@ internal suspend fun creatSheet(sheetId: String, token: String, request: CreateS
         bearerAuth(token)
         setBody(request)
     }
-    if (response.status == HttpStatusCode.BadRequest){
-        throw SheetTableException("A table with ${request.requests.get(0).addSheet.properties.title} exists")
+    when{
+        response.status == HttpStatusCode.BadRequest -> {
+            throw SheetTableException("A table with ${request.requests.get(0).addSheet.properties.title} exists")
+        }
+        response.status == HttpStatusCode.Unauthorized ->{
+            throw AuthorizationException("Bearer token has expired")
+        }
     }
     return response.status == HttpStatusCode.OK
 }
@@ -66,16 +73,16 @@ internal fun creatSheetRequest(name: String): CreateSheet{
 }
 
 @PublishedApi
-internal inline fun <reified T> getSheetAndColumnNames(): SheetTab{
-    val tableName = T::class.java.simpleName
+internal inline fun <reified T> getSheetAndColumnNames(mTableName: String? = null): SheetTab{
+    val tableName = mTableName ?: T::class.java.simpleName
     val columnNames = T::class.java.declaredFields.map { it.name }.filter { it != "Companion" }
     if (!columnNames.contains("id"))
         throw SheetTableException("Table must include an \"id\" field")
     return SheetTab(tableName, columnNames.rearrange())
 }
 @PublishedApi
-internal inline fun <reified T> getSheetAndColumnNamesSerializer(): SheetTab{
-    val tableName = T::class.java.simpleName
+internal inline fun <reified T> getSheetAndColumnNamesSerializer(mTableName: String? = null): SheetTab{
+    val tableName = mTableName ?: T::class.java.simpleName
     val newInstance = T::class.java.getDeclaredConstructor().newInstance()
     val columnNames = json.encodeToJsonElement(newInstance).jsonObject.keys.toList()
     if (!columnNames.contains("id"))
